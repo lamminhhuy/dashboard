@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { listUser } from "../../Redux/Actions/userActions";
 import Loading from "../LoadingError/Loading";
 import Message from "../LoadingError/Error";
+import { disableUser,enableUser } from "../../services/userMange";
 
 const UserComponent = () => {
   const dispatch = useDispatch();
@@ -14,14 +15,21 @@ const UserComponent = () => {
   useEffect(() => {
     dispatch(listUser());
   }, [dispatch]);
-  return (
+  const enablehandler =(userinfo)=>{
+    enableUser (userinfo);
+    dispatch(listUser());
+     dispatch(listUser());
+  };
+  const disablehandler = (userinfo) =>{
+   disableUser (userinfo); 
+   dispatch(listUser());
+ }
+   return (
     <section className="content-main">
       <div className="content-header">
         <h2 className="content-title">Customers</h2>
         <div>
-          <Link to="#" className="btn btn-primary">
-            <i className="material-icons md-plus"></i> Create new
-          </Link>
+        
         </div>
       </div>
 
@@ -29,11 +37,7 @@ const UserComponent = () => {
         <header className="card-header">
           <div className="row gx-3">
             <div className="col-lg-4 col-md-6 me-auto">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="form-control"
-              />
+         
             </div>
             <div className="col-lg-2 col-6 col-md-3">
               <select className="form-select">
@@ -84,6 +88,8 @@ const UserComponent = () => {
                           <a href={`mailto:${user.email}`}>{user.email}</a>
                         </p>
                       </div>
+                      <button className="btn" value={user.email} onClick={(e)=>enablehandler(e.target.value)}>Enable</button>     
+                      <button className="btn" value={user.email} onClick={(e)=>disablehandler(e.target.value)}> {user.isDisable ? "Disabled" : "Disable"}</button> 
                     </div>
                   </div>
                 </div>

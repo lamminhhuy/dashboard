@@ -1,16 +1,36 @@
+import axios from "axios";
+import { data } from "jquery";
 import React from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { getlist,deleteCategory } from "../../services/llistCategory";
 
-const CategoriesTable = () => {
+import Toast from "../LoadingError/Toast";
+const CategoriesTable = () =>  {
+  const [lists, setLists] = useState([]);
+const [reload, setreload] = useState('');
+  useEffect(()=>{
+    let mounted = true;
+  getlist().then((data) => {if(mounted){setLists(data); }});
+  return () => mounted = false;
+  },[]);
+  const handdledeleteCategory =(id) =>{ 
+    console.log(id);
+  deleteCategory(id).then((data) => {
+    console.log(data);
+    toast.success( data);
+    getlist().then((data) => {setLists(data); })});
+  
+  }
   return (
+  
     <div className="col-md-12 col-lg-8">
       <table className="table">
         <thead>
           <tr>
             <th>
-              <div className="form-check">
-                <input className="form-check-input" type="checkbox" value="" />
-              </div>
+            
             </th>
             <th>ID</th>
             <th>Name</th>
@@ -19,18 +39,19 @@ const CategoriesTable = () => {
           </tr>
         </thead>
         {/* Table Data */}
-        <tbody>
-          <tr>
+        <tbody> 
+          {lists && lists.map(list=> (
+          <tr >
             <td>
               <div className="form-check">
                 <input className="form-check-input" type="checkbox" value="" />
               </div>
             </td>
-            <td>1</td>
+            <td>{list._id}</td>
             <td>
-              <b>Men clothes</b>
+              <b>{list.name}</b>
             </td>
-            <td>Men clothes</td>
+            <td>{list.description}</td>
             <td className="text-end">
               <div className="dropdown">
                 <Link
@@ -41,80 +62,15 @@ const CategoriesTable = () => {
                   <i className="fas fa-ellipsis-h"></i>
                 </Link>
                 <div className="dropdown-menu">
-                  <Link className="dropdown-item" to="#">
-                    Edit info
-                  </Link>
-                  <Link className="dropdown-item text-danger" to="#">
-                    Delete
-                  </Link>
-                </div>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <div className="form-check">
-                <input className="form-check-input" type="checkbox" value="" />
-              </div>
-            </td>
-            <td>2</td>
-            <td>
-              <b>Women fashion</b>
-            </td>
-            <td>Fashions for Women</td>
 
-            <td className="text-end">
-              <div className="dropdown">
-                <Link
-                  to="#"
-                  data-bs-toggle="dropdown"
-                  className="btn btn-light"
-                >
-                  <i className="fas fa-ellipsis-h"></i>
-                </Link>
-                <div className="dropdown-menu">
-                  <Link className="dropdown-item" to="#">
-                    Edit info
-                  </Link>
-                  <Link className="dropdown-item text-danger" to="#">
+                  <button className="dropdown-item text-danger" to="#" value={list._id} onClick={(e)=> handdledeleteCategory(e.target.value)}>
                     Delete
-                  </Link>
+                  </button>
                 </div>
               </div>
             </td>
           </tr>
-          <tr>
-            <td>
-              <div className="form-check">
-                <input className="form-check-input" type="checkbox" value="" />
-              </div>
-            </td>
-            <td>3</td>
-            <td>
-              <b>Kids clothes</b>
-            </td>
-            <td>Clothes for kids</td>
-
-            <td className="text-end">
-              <div className="dropdown">
-                <Link
-                  to="#"
-                  data-bs-toggle="dropdown"
-                  className="btn btn-light"
-                >
-                  <i className="fas fa-ellipsis-h"></i>
-                </Link>
-                <div className="dropdown-menu">
-                  <Link className="dropdown-item" to="#">
-                    Edit info
-                  </Link>
-                  <Link className="dropdown-item text-danger" to="#">
-                    Delete
-                  </Link>
-                </div>
-              </div>
-            </td>
-          </tr>
+          ))}
         </tbody>
       </table>
     </div>
