@@ -1,6 +1,6 @@
 import React from "react";
 
-const ProductsStatistics = () => {
+const ProductsStatisics = () => {
   return (
     <div className="col-xl-6 col-lg-12">
       <div className="card mb-4 shadow-sm">
